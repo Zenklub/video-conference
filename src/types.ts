@@ -102,5 +102,5 @@ export type JitsiMeetEventType =
 
 export interface JitsiMeetType {
   start: (options: JitsiMeetConferenceOptions) => Promise<void>;
-  end: () => void;
+  end: () => Promise<void>;
 }

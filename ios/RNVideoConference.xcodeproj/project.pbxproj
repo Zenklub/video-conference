@@ -31,7 +31,7 @@
 		A7412B1628D25F3800CB6C8E /* RNVideoConferenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNVideoConferenceViewController.swift; sourceTree = "<group>"; };
 		A7412B1728D25F3800CB6C8E /* RNVideoConference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVideoConference.m; sourceTree = "<group>"; };
 		A7412B1828D25F3800CB6C8E /* RNVideoConference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNVideoConference.swift; sourceTree = "<group>"; };
-		A7412B1B28D25F3800CB6C8E /* JitsiUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JitsiUtil.swift; sourceTree = "<group>"; };
+		A7412B1B28D25F3800CB6C8E /* JitsiUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JitsiUtil.swift; path = Jitsi/JitsiUtil.swift; sourceTree = "<group>"; };
 		A7412B2528D262F500CB6C8E /* RNVideoConferenceViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVideoConferenceViewController.h; sourceTree = "<group>"; };
 		A7412B2628D2630400CB6C8E /* Bridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bridging.h; sourceTree = "<group>"; };
 		A776069028D3B94C009D5779 /* EventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventEmitter.swift; sourceTree = "<group>"; };
@@ -246,7 +246,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNVideoConference;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "JitsiMeet-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = Bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -267,7 +267,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNVideoConference;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "JitsiMeet-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = Bridging.h;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

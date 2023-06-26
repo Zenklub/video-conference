@@ -24,11 +24,11 @@ class RNVideoConferenceViewController: UIViewController {
         }
         
         view.addSubview(rnView)
-        videoConference.delegate = self
     }
     
     func end() {
         videoConference.end()
+        EventEmitter.sharedInstance.dispatch(event: .conferenceTerminated, body: {})
     }
     
     func start(with options: NSDictionary) throws {
@@ -39,7 +39,7 @@ class RNVideoConferenceViewController: UIViewController {
         guard let userInfo = options["userInfo"] as? NSDictionary else {
             throw RNVideoConferenceError.missingRoom
         }
-        
+        videoConference.delegate = self
         try videoConference.start(
             with: VideoConferenceOptions.from(dictionary: options),
             userData: UserData.from(dictionary: userInfo),

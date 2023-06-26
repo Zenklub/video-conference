@@ -51,7 +51,6 @@ class JitsiMeetEventListener {
 
 export class CapabilitiesBuilder {
   private capabilities: VideoConferenceCapabilities = {
-    addPeople: true,
     calendar: true,
     audioMute: true,
     videoMute: true,
@@ -61,7 +60,6 @@ export class CapabilitiesBuilder {
     conferenceTimer: true,
     chat: true,
     filmStrip: true,
-    invite: true,
     speakerStats: true,
     kickOut: true,
     meetingName: true,
@@ -71,13 +69,18 @@ export class CapabilitiesBuilder {
     preJoinPage: true,
     raiseHand: true,
     serverUrlChange: true,
-    settings: true,
-    tileView: true,
+    tileView: false,
     videoShare: true,
+    toolbox: true,
+    settings: true,
+    reactions: true,
+    securityOptions: true,
 
     recordingIos: false,
     recordingAndroid: false,
     liveStreaming: false,
+    invite: false,
+    addPeople: false,
     pip: false,
     toolboxAlwaysVisible: false,
     welcomePage: false,
@@ -90,10 +93,7 @@ export class CapabilitiesBuilder {
     lobbyMode: false,
     pipWhileScreenSharing: false,
     preJoinPageHideName: false,
-    reactions: false,
     replaceParticipant: false,
-    securityOptions: false,
-    toolbox: false,
   };
 
   addPeople(value: boolean = true) {
@@ -313,3 +313,6 @@ export class CapabilitiesBuilder {
 }
 
 export const JitsiMeetEvent = new JitsiMeetEventListener();
+
+// export types
+export { JitsiMeetConferenceOptions } from './types';
