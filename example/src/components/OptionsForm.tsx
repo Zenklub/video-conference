@@ -1,11 +1,11 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import React from 'react';
-import { JitsiMeetConferenceOptions } from '@zenklub/react-native-video-conference';
+import { VideoConferenceOptions } from '@zenklub/react-native-video-conference';
 
 interface Props {
   onChangeOption: (text: string, key: string) => void;
   onChangeUserInfo: (text: string, key: string) => void;
-  options: JitsiMeetConferenceOptions;
+  options: VideoConferenceOptions;
 }
 
 const OptionsForm: React.FC<Props> = ({

@@ -1,54 +1,5 @@
-import {
-  DeviceEventEmitter,
-  NativeEventEmitter,
-  NativeModules,
-  Platform,
-} from 'react-native';
-import type {
-  JitsiMeetType,
-  JitsiMeetEventType,
-  EventListener,
-  VideoConferenceCapabilities,
-} from './types';
-
-const { RNVideoConference } = NativeModules;
-
-const eventEmitter = Platform.select({
-  ios: new NativeEventEmitter(RNVideoConference),
-  android: DeviceEventEmitter,
-});
-
-export default RNVideoConference as JitsiMeetType;
-
-class JitsiMeetEventListener {
-  private listeners: EventListener[] = [];
-
-  constructor() {
-    eventEmitter?.addListener('onJitsiMeetConference', this.onEventHandler);
-  }
-
-  private onEventHandler = (event: JitsiMeetEventType) => {
-    this.listeners.forEach((listener) => {
-      listener(event);
-    });
-  };
-
-  addEventListener(listener: EventListener) {
-    // Prevent duplication
-    this.removeEventListener(listener);
-
-    this.listeners.push(listener);
-
-    return () => {
-      this.removeEventListener(listener);
-    };
-  }
-
-  removeEventListener(listener: EventListener) {
-    this.listeners = this.listeners.filter((it) => it !== listener);
-  }
-}
-
+import type { VideoConferenceCapabilities } from './types';
+import { VideoConferenceService } from './video-conference';
 export class CapabilitiesBuilder {
   private capabilities: VideoConferenceCapabilities = {
     calendar: true,
@@ -312,7 +263,9 @@ export class CapabilitiesBuilder {
   }
 }
 
-export const JitsiMeetEvent = new JitsiMeetEventListener();
+export { VideoConferenceEvent } from './video-conference.events';
 
 // export types
-export { JitsiMeetConferenceOptions } from './types';
+export { VideoConferenceOptions } from './types';
+
+export default VideoConferenceService;

@@ -1,10 +1,10 @@
-export interface JitsiMeetUserInfo {
+export interface VideoUserInfo {
   name?: string;
   email?: string;
   avatar?: string;
 }
 
-export type EventListener = (event: JitsiMeetEventType) => void;
+export type EventListener = (event: VideoConferenceEventType) => void;
 
 export interface VideoConferenceCapabilities {
   addPeople: boolean;
@@ -51,10 +51,10 @@ export interface VideoConferenceCapabilities {
   toolbox: boolean;
 }
 
-export interface JitsiMeetConferenceOptions {
+export interface VideoConferenceOptions {
   room: string;
   serverUrl?: string;
-  userInfo?: JitsiMeetUserInfo;
+  userInfo?: VideoUserInfo;
   serverCredentials?: string;
   startingSettings?: {
     subject?: string;
@@ -70,7 +70,7 @@ interface Event<T extends string, D extends object> {
   data: D;
 }
 
-export type JitsiMeetEventType =
+export type VideoConferenceEventType =
   | Event<'conference-start', { url: string }>
   | Event<'conference-joined', { url: string }>
   | Event<'conference-terminated', { url: string; error?: string }>
@@ -100,7 +100,17 @@ export type JitsiMeetEventType =
   | Event<'video-muted-change', { muted: boolean }>
   | Event<'ready-to-close', {}>;
 
-export interface JitsiMeetType {
-  start: (options: JitsiMeetConferenceOptions) => Promise<void>;
+export interface VideoConferenceType {
+  start: (options: VideoConferenceOptions) => Promise<void>;
   end: () => Promise<void>;
+}
+
+export abstract class VideoConference {
+  abstract start(options: VideoConferenceOptions): Promise<void>;
+
+  /**
+   * Ends the ongoing video conference
+   * @throws {TerminateConferenceError}
+   */
+  abstract end(): Promise<void>;
 }

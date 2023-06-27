@@ -1,7 +1,7 @@
 import VideoConference, {
-  JitsiMeetEvent,
+  VideoConferenceEvent,
   CapabilitiesBuilder,
-  JitsiMeetConferenceOptions,
+  VideoConferenceOptions,
 } from '@zenklub/react-native-video-conference';
 
 import React, { useEffect, useState } from 'react';
@@ -21,7 +21,7 @@ export interface JSONObject {
 
 const capabilities = new CapabilitiesBuilder().build();
 
-const conferenceOptions: JitsiMeetConferenceOptions = {
+const conferenceOptions: VideoConferenceOptions = {
   room: 'ReactNativeJitsiRoom',
   serverUrl: 'https://meet.jit.si/',
   userInfo: {
@@ -34,10 +34,10 @@ const conferenceOptions: JitsiMeetConferenceOptions = {
 
 function App() {
   const [options, setOptions] =
-    useState<JitsiMeetConferenceOptions>(conferenceOptions);
+    useState<VideoConferenceOptions>(conferenceOptions);
 
   useEffect(() => {
-    const remove = JitsiMeetEvent.addEventListener((event) => {
+    const remove = VideoConferenceEvent.addEventListener((event) => {
       console.log('EventType', event.type);
     });
     return () => {
@@ -70,7 +70,7 @@ function App() {
   return (
     <ScrollView contentContainerStyle={styles.containerScroll}>
       <SafeAreaView style={styles.container}>
-        <View style={{ alignItems: 'flex-end', marginHorizontal: 20 }}>
+        <View style={styles.viewBtnReset}>
           <Pressable
             onPress={resetOptions}
             style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}
@@ -100,6 +100,7 @@ function App() {
 }
 
 const styles = StyleSheet.create({
+  viewBtnReset: { alignItems: 'flex-end', marginHorizontal: 20 },
   container: {
     flex: 1,
   },
