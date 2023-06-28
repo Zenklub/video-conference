@@ -32,7 +32,7 @@ export class CapabilitiesBuilder {
     liveStreaming: false,
     invite: false,
     addPeople: false,
-    pip: false,
+    pip: true,
     toolboxAlwaysVisible: false,
     welcomePage: false,
     fullScreen: false,
