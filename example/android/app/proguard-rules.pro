@@ -9,6 +9,11 @@
 
 # Add any project specific keep options here:
 
+
+# WebRTC
+-keep class org.webrtc.** { *; }
+-dontwarn org.chromium.build.BuildHooksAndroid
+
 # Jisti Meet SDK
 
 -keep class org.jitsi.meet.** { *; }

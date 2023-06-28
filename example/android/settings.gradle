@@ -2,5 +2,5 @@ rootProject.name = 'RNVideoConferenceExample'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 
-include ':reactnativejitsimeet'
-project(':reactnativejitsimeet').projectDir = new File(rootProject.projectDir, '../../android')
+include ':reactnativevideoconference'
+project(':reactnativevideoconference').projectDir = new File(rootProject.projectDir, '../../android')

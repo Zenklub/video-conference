@@ -304,7 +304,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativejitsimeet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativevideoconference;
 				PRODUCT_NAME = RNVideoConferenceExample;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RNVideoConferenceExample-Bridging-Header.h";
@@ -333,7 +333,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativejitsimeet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativevideoconference;
 				PRODUCT_NAME = RNVideoConferenceExample;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RNVideoConferenceExample-Bridging-Header.h";

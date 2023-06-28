@@ -1,4 +1,4 @@
-package com.example.reactnativejitsimeet;
+package com.example.reactnativevideoconference;
 
 import androidx.annotation.Nullable;
 
@@ -14,8 +14,8 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import com.reactnativejitsimeet.JitsiMeetActivityManager;
-import com.reactnativejitsimeet.JitsiMeetPackage;
+import com.reactnativevideoconference.JitsiMeetActivityManager;
+import com.reactnativevideoconference.JitsiMeetPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -59,7 +59,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want Flipper enabled
-    this.activityManager = new JitsiMeetActivityManager(this);
+    // this.activityManager = new JitsiMeetActivityManager(this);
   }
 
 
