@@ -1,4 +1,4 @@
-package com.reactnativejitsimeet;
+package com.reactnativevideoconference;
 
 import android.app.Activity;
 import android.app.Application;

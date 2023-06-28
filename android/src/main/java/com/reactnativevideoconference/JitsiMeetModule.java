@@ -1,9 +1,10 @@
-package com.reactnativejitsimeet;
+package com.reactnativevideoconference;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -14,22 +15,27 @@ import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import org.jitsi.meet.sdk.BroadcastEvent;
 import org.jitsi.meet.sdk.BroadcastIntentHelper;
-import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.jitsi.meet.sdk.JitsiMeetUserInfo;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 @ReactModule(name = JitsiMeetModule.NAME)
-public class JitsiMeetModule extends ReactContextBaseJavaModule {
+public class JitsiMeetModule extends ReactContextBaseJavaModule implements  PictureInPictureCloseListener {
   public static final String NAME = "RNVideoConference";
 
   private ReactApplicationContext reactContext;
+
+  private JitsiMeetActivityExtended jitsiMeetActivityExtended;
+
+  public void registerPictureInPictureCloseListener(JitsiMeetActivityExtended activity) {
+    this.jitsiMeetActivityExtended = activity;
+    this.jitsiMeetActivityExtended.setPiPCloseListener(this);
+  }
 
   private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
     @Override
@@ -50,7 +56,7 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void hangUp() {
+  public void end() {
     Intent hangupBroadcastIntent = BroadcastIntentHelper.buildHangUpIntent();
     LocalBroadcastManager.getInstance(getReactApplicationContext()).sendBroadcast(hangupBroadcastIntent);
   }
@@ -63,6 +69,21 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule {
 
   public void onDestroy() {
     LocalBroadcastManager.getInstance(getReactApplicationContext()).unregisterReceiver(broadcastReceiver);
+  }
+
+
+  @Override
+  public void onPictureInPictureClosed() {
+    Log.d("listen", "onPictureInPictureClosed");
+    WritableMap payload = Arguments.createMap();
+    String jsEventName = this.getEventNameForJs(BroadcastEvent.Type.CONFERENCE_TERMINATED);
+    WritableMap params = Arguments.createMap();
+    params.putMap("data", payload);
+    params.putString("type", jsEventName);
+
+    this.reactContext
+      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+      .emit("onJitsiMeetConference", params);
   }
 
   @ReactMethod
@@ -141,13 +162,26 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule {
     }
 
     JitsiMeetActivityExtended.launchExtended(getReactApplicationContext(), builder.build());
+
+
+
+
+
+    JitsiMeetActivityExtended.setCallback(new JitsiMeetActivityCallback() {
+      @Override
+      public void onCreated(JitsiMeetActivityExtended activity) {
+        registerPictureInPictureCloseListener(activity);
+      }
+    });
+
     registerForBroadcastMessages();
   }
 
   @ReactMethod
-  public void launch(ReadableMap options, Promise onConferenceTerminated) {
+  public void start(ReadableMap options, Promise onConferenceTerminated) {
     launchJitsiMeetView(options, onConferenceTerminated);
   }
+
 
   private void registerForBroadcastMessages() {
     IntentFilter intentFilter = new IntentFilter();

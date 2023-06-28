@@ -1,6 +1,6 @@
 {
   "name": "@zenklub/react-native-video-conference",
-  "version": "2.3.1",
+  "version": "0.1.0",
   "description": "React native Wrapper for Jitsi Meet SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -39,13 +39,13 @@
     "meet",
     "sdk"
   ],
-  "repository": "https://github.com/bortolilucas/react-native-video-conference",
+  "repository": "https://github.com/zenklub/react-native-video-conference",
   "author": "Lucas Bortoli <lucasbortolidev@gmail.com> (https://github.com/bortolilucas)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bortolilucas/react-native-video-conference/issues"
+    "url": "https://github.com/zenklub/react-native-video-conference/issues"
   },
-  "homepage": "https://github.com/bortolilucas/react-native-video-conference#readme",
+  "homepage": "https://github.com/zenklub/react-native-video-conference#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
