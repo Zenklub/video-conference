@@ -27,7 +27,7 @@ public class JitsiMeetActivityExtended extends JitsiMeetActivity {
   }
 
   @Override
-  protected void onUserLeaveHint() { handlePictureInPicture(); }
+  protected void onUserLeaveHint() { handlePictureInPicture();}
 
   private PictureInPictureCloseListener pictureInPictureCloseListener;
 
@@ -39,13 +39,30 @@ public class JitsiMeetActivityExtended extends JitsiMeetActivity {
     JitsiMeetActivityExtended.callback = callback;
   }
 
+
+  @Override
+  public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode);
+
+    if (isInPictureInPictureMode) {
+      isPictureInPicture = true;
+      Log.d("refer_log", "enter-pip");
+      if (pictureInPictureCloseListener != null) {
+        pictureInPictureCloseListener.onEnterPictureInPicture();
+      }
+    } else {
+      isPictureInPicture = false;
+    }
+  }
+
   @Override
   public void onStop() {
     super.onStop();
-    Log.d("listen", "onStop");
-    if (pictureInPictureCloseListener != null && isPictureInPicture == true) {
+    if (isPictureInPicture == true && pictureInPictureCloseListener != null) {
+      Log.d("refer_log", "onStop");
+      Intent intent = getIntent();
       pictureInPictureCloseListener.onPictureInPictureClosed();
-      isPictureInPicture = false;
+//      isPictureInPicture = false;
     }
   }
 
@@ -73,9 +90,9 @@ public class JitsiMeetActivityExtended extends JitsiMeetActivity {
       if (flags != null) {
         if (flags.getBoolean("pip.enabled")) {
           JitsiMeetView view = this.getJitsiView();
+          Log.d("refer_log", "enterPictureInPicture");
           if (view != null) {
             view.enterPictureInPicture();
-            isPictureInPicture = true;
           }
         }
       }

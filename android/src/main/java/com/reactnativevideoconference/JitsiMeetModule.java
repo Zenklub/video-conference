@@ -86,6 +86,20 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
       .emit("onJitsiMeetConference", params);
   }
 
+
+  @Override
+  public void onEnterPictureInPicture() {
+    WritableMap payload = Arguments.createMap();
+    String jsEventName = "enter-pip";
+    WritableMap params = Arguments.createMap();
+    params.putMap("data", payload);
+    params.putString("type", jsEventName);
+
+    this.reactContext
+      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+      .emit("onJitsiMeetConference", params);
+  }
+
   @ReactMethod
   public void launchJitsiMeetView(ReadableMap options, Promise onConferenceTerminated) {
     JitsiMeetConferenceOptions.Builder builder = new JitsiMeetConferenceOptions.Builder();
@@ -162,7 +176,7 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
     }
 
     JitsiMeetActivityExtended.launchExtended(getReactApplicationContext(), builder.build());
-
+    registerForBroadcastMessages();
 
 
 
@@ -173,8 +187,6 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
         registerPictureInPictureCloseListener(activity);
       }
     });
-
-    registerForBroadcastMessages();
   }
 
   @ReactMethod
