@@ -38,7 +38,7 @@ function App() {
 
   useEffect(() => {
     const remove = VideoConferenceEvent.addEventListener((event) => {
-      console.log('EventType', event.type);
+      console.log('EventType', event.type, '\ndata:', event.data);
     });
     return () => {
       remove();
