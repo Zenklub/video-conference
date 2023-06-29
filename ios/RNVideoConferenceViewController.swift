@@ -39,12 +39,12 @@ class RNVideoConferenceViewController: UIViewController {
         guard let userInfo = options["userInfo"] as? NSDictionary else {
             throw RNVideoConferenceError.missingRoom
         }
-        videoConference.delegate = self
         try videoConference.start(
             with: VideoConferenceOptions.from(dictionary: options),
             userData: UserData.from(dictionary: userInfo),
             capabilities: VideoConferenceCapabilities.from(dictionary: options["capabilities"] as? NSDictionary)
         )
+        videoConference.delegate = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -62,6 +62,7 @@ class RNVideoConferenceViewController: UIViewController {
 
 extension RNVideoConferenceViewController: RNVideoConferenceViewControllerDelegate {
     func ready(toClose data: [AnyHashable : Any]!) {
+        EventEmitter.sharedInstance.dispatch(event: .conferenceTerminated, body: data)
         EventEmitter.sharedInstance.dispatch(event: .readyToClose, body: data)
     }
     
