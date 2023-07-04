@@ -208,7 +208,7 @@ dependencies {
 
     // Jitsi SDK
     implementation(project(':reactnativevideoconference')) {
-        
+        exclude group: 'com.facebook.react', module:'react-native-async-storage'
         exclude group: 'com.facebook', module:'hermes'
         transitive = true
     }

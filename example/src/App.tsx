@@ -5,15 +5,11 @@ import VideoConference, {
 } from '@zenklub/react-native-video-conference';
 
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Pressable,
-  Text,
-  ScrollView,
-  SafeAreaView,
-  View,
-} from 'react-native';
-import OptionsForm from './components/OptionsForm';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import VideoConferenceExample from './VideoConferenceExample';
+import Loading from './components/Loading';
 
 export interface JSONObject {
   [key: string]: string | JSONObject | unknown;
@@ -35,8 +31,27 @@ const conferenceOptions: VideoConferenceOptions = {
 function App() {
   const [options, setOptions] =
     useState<VideoConferenceOptions>(conferenceOptions);
+  const [loading, setLoading] = useState(true);
+
+  const onSaveOptionOnStorage = (values: VideoConferenceOptions) => {
+    AsyncStorage.setItem('VideoConferenceOptions', JSON.stringify(values));
+  };
+
+  const loaderAsyncOptions = async () => {
+    try {
+      const content = await AsyncStorage.getItem('VideoConferenceOptions');
+      if (!content) throw new Error('Storage not found');
+      setOptions(JSON.parse(content));
+    } catch {
+      setOptions(conferenceOptions);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
+    loaderAsyncOptions();
+
     const remove = VideoConferenceEvent.addEventListener((event) => {
       console.log('EventType', event.type, '\ndata:', event.data);
     });
@@ -44,6 +59,10 @@ function App() {
       remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (options) onSaveOptionOnStorage(options);
+  }, [options]);
 
   const onChangeOption = (text: string, name: string) => {
     setOptions((values) => ({ ...values, [name]: text }));
@@ -58,80 +77,33 @@ function App() {
       userInfo: { ...values.userInfo, [name]: text },
     }));
   };
+  const onChangeCapabilities = (text: string, value: boolean) => {
+    setOptions((values) => ({
+      ...values,
+      capabilities: { ...values.capabilities, [text]: value },
+    }));
+  };
 
   const startJitsiAsNativeController = async () => {
     try {
-      await VideoConference.start(options);
+      if (options) await VideoConference.start(options);
     } catch (err) {
       console.error(err);
     }
   };
 
+  if (!options || loading) return <Loading />;
+
   return (
-    <ScrollView contentContainerStyle={styles.containerScroll}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.viewBtnReset}>
-          <Pressable
-            onPress={resetOptions}
-            style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}
-          >
-            <Text style={styles.resetText}>Reset</Text>
-          </Pressable>
-        </View>
-        <OptionsForm
-          onChangeOption={onChangeOption}
-          onChangeUserInfo={onChangeUserInfo}
-          options={options}
-        />
-        <Pressable
-          onPress={startJitsiAsNativeController}
-          style={({ pressed }) => [
-            styles.pressable,
-            { opacity: pressed ? 0.5 : 1 },
-          ]}
-        >
-          <Text style={styles.pressableText}>
-            Start Jitsi on top of RN Application
-          </Text>
-        </Pressable>
-      </SafeAreaView>
-    </ScrollView>
+    <VideoConferenceExample
+      options={options}
+      onChangeOption={onChangeOption}
+      onChangeUserInfo={onChangeUserInfo}
+      onChangeCapabilities={onChangeCapabilities}
+      resetOptions={resetOptions}
+      onStart={startJitsiAsNativeController}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  viewBtnReset: { alignItems: 'flex-end', marginHorizontal: 20 },
-  container: {
-    flex: 1,
-  },
-  containerScroll: {
-    flexGrow: 1,
-  },
-  pressable: {
-    alignSelf: 'center',
-    width: '80%',
-    borderRadius: 15,
-    height: 50,
-    marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
-  },
-  pressableText: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#fff',
-  },
-  resetText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#222',
-  },
-  jitsiMeetView: {
-    flex: 1,
-  },
-});
 
 export default App;

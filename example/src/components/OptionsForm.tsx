@@ -5,7 +5,7 @@ import { VideoConferenceOptions } from '@zenklub/react-native-video-conference';
 interface Props {
   onChangeOption: (text: string, key: string) => void;
   onChangeUserInfo: (text: string, key: string) => void;
-  options: VideoConferenceOptions;
+  options?: VideoConferenceOptions;
 }
 
 const OptionsForm: React.FC<Props> = ({
@@ -18,7 +18,7 @@ const OptionsForm: React.FC<Props> = ({
       <View style={styles.inputRow}>
         <Text style={styles.label}>Room:</Text>
         <TextInput
-          value={options.room}
+          value={options?.room}
           style={styles.input}
           onChangeText={(text) => onChangeOption(text, 'room')}
         />
@@ -26,17 +26,17 @@ const OptionsForm: React.FC<Props> = ({
       <View style={styles.inputRow}>
         <Text style={styles.label}>Server Url:</Text>
         <TextInput
-          value={options.serverUrl}
+          value={options?.serverUrl}
           style={styles.input}
           onChangeText={(text) => onChangeOption(text, 'serverUrl')}
         />
       </View>
-      {Object.entries(options.userInfo || {}).map(([key, value]) => (
+      {Object.entries(options?.userInfo || {}).map(([key, value]) => (
         <View style={styles.inputRow} key={key}>
           <Text style={styles.label}>{key}:</Text>
           <TextInput
             defaultValue={value}
-            style={styles.input}
+            style={styles?.input}
             onChangeText={(text) => onChangeUserInfo(text, key)}
           />
         </View>
