@@ -24,12 +24,12 @@ The package can be invoked in two modes
 
 ```jsx
 import VideoConference, {
-  VideoConferenceEvent,
+  VideoConferenceListener,
   CapabilitiesBuilder,
   VideoConferenceOptions,
-  VideoConferenceEventType,
+  VideoConferenceEvent,
 } from '@zenklub/react-native-video-conference';
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { StyleSheet, View, Pressable, Text } from 'react-native';
 
 const capabilities = new CapabilitiesBuilder().build();
@@ -46,13 +46,13 @@ const conferenceOptions: VideoConferenceOptions = {
 };
 
 function App() {
-
-  const eventListener = useCallback((event: VideoConferenceEventType) => {
+  
+  const eventListener = useCallback((event: VideoConferenceEvent) => {
     console.log('EventType', event.type, '\ndata:', event.data);
   }, []);
 
   useEffect(() => {
-    const remove = VideoConferenceEvent.addEventListener(eventListener);
+    const remove = VideoConferenceListener.addEventListener(eventListener);
 
     return () => remove()
   }, [eventListener]);
@@ -296,7 +296,7 @@ buildscript {
 | audioMuted   | boolean   | false               | Controls whether the participant will join the conference with the microphone muted                             |
 | videoMuted   | boolean   | false               | Controls whether the participant will join the conference with the camera muted                                 |
 | userInfo     | object    | {}                  | Object that contains information about the participant starting the meeting. See [UserInfo](#userinfo)          |
-| featureFlags | object    | {}                  | Object that contains information about which feature flags should be set. See below for more info.              |
+| capabilities | object    | {}                  | Object that contains information about which feature flags should be set. See below for more info.              |
 
 ### Feature Flags
 
