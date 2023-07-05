@@ -7,11 +7,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class JitsiMeetActivityManager implements Application.ActivityLifecycleCallbacks {
+public class VideoConferenceActivityManager implements Application.ActivityLifecycleCallbacks {
   private Activity currentActivity;
 
 
-  public JitsiMeetActivityManager(Application myApplication) {
+  public VideoConferenceActivityManager(Application myApplication) {
     myApplication.registerActivityLifecycleCallbacks(this);
   }
 

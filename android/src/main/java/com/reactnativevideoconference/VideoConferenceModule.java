@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-@ReactModule(name = JitsiMeetModule.NAME)
-public class JitsiMeetModule extends ReactContextBaseJavaModule implements  PictureInPictureCloseListener {
+@ReactModule(name = VideoConferenceModule.NAME)
+public class VideoConferenceModule extends ReactContextBaseJavaModule implements  PictureInPictureCloseListener {
   public static final String NAME = "RNVideoConference";
 
   private ReactApplicationContext reactContext;
@@ -44,7 +44,7 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
     }
   };
 
-  public JitsiMeetModule(ReactApplicationContext reactContext) {
+  public VideoConferenceModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
   }
