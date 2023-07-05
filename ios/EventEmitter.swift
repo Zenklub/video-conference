@@ -31,7 +31,7 @@ enum EventTypes: String, CaseIterable {
 
 class EventEmitter {
 
-    public static let eventName = "onJitsiMeetConference"
+    public static let eventName = "onVideoConferenceListener"
 
     /// Shared Instance.
     public static var sharedInstance = EventEmitter()

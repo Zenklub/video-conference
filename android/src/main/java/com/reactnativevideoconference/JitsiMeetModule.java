@@ -214,7 +214,7 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
 
       this.reactContext
         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-        .emit("onJitsiMeetConference", params);
+        .emit("onVideoConferenceListener", params);
     }
   }
 
@@ -236,7 +236,7 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
 
     this.reactContext
       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit("onJitsiMeetConference", params);
+      .emit("onVideoConferenceListener", params);
   }
 
   @Override
