@@ -4,7 +4,10 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
-import type { VideoConferenceEventType, EventListener } from './types';
+import type {
+  VideoConferenceEvent,
+  VideoConferenceEventListener,
+} from '../types';
 
 const { RNVideoConference } = NativeModules;
 
@@ -13,20 +16,20 @@ const eventEmitter = Platform.select({
   android: DeviceEventEmitter,
 });
 
-class VideoConferenceEventListener {
-  private listeners: EventListener[] = [];
+class EventListenerService {
+  private listeners: VideoConferenceEventListener[] = [];
 
   constructor() {
     eventEmitter?.addListener('onJitsiMeetConference', this.onEventHandler);
   }
 
-  private onEventHandler = (event: VideoConferenceEventType) => {
+  private onEventHandler = (event: VideoConferenceEvent) => {
     this.listeners.forEach((listener) => {
       listener(event);
     });
   };
 
-  addEventListener(listener: EventListener) {
+  addEventListener(listener: VideoConferenceEventListener) {
     // Prevent duplication
     this.removeEventListener(listener);
 
@@ -37,9 +40,9 @@ class VideoConferenceEventListener {
     };
   }
 
-  removeEventListener(listener: EventListener) {
+  removeEventListener(listener: VideoConferenceEventListener) {
     this.listeners = this.listeners.filter((it) => it !== listener);
   }
 }
 
-export const VideoConferenceEvent = new VideoConferenceEventListener();
+export const VideoConferenceListener = new EventListenerService();

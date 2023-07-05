@@ -1,10 +1,15 @@
+import { StartConferenceError, TerminateConferenceError } from './error.types';
+
 export interface VideoUserInfo {
   name?: string;
   email?: string;
   avatar?: string;
 }
 
-export type EventListener = (event: VideoConferenceEventType) => void;
+export type VideoConferenceEventListener = (
+  event: VideoConferenceEvent,
+  instance?: VideoConferenceProps
+) => void;
 
 export interface VideoConferenceCapabilities {
   addPeople: boolean;
@@ -70,12 +75,12 @@ interface Event<T extends string, D extends object> {
   data: D;
 }
 
-export type VideoConferenceEventType =
-  | Event<'conference-start', { url: string }>
+export type VideoConferenceEvent =
+  | Event<'conference-start', { url: string; roomId?: string }>
   | Event<'conference-joined', { url: string }>
   | Event<'conference-terminated', { url: string; error?: string }>
   | Event<'conference-will-join', { url: string }>
-  | Event<'enter-pip', {}>
+  | Event<'enter-pip', { url?: string }>
   | Event<
       'participant-joined',
       { participantId: string; email: string; name: string; role: string }
@@ -98,14 +103,32 @@ export type VideoConferenceEventType =
   | Event<'chat-toggled', { isOpen: boolean }>
   | Event<'audio-muted-change', { muted: boolean }>
   | Event<'video-muted-change', { muted: boolean }>
-  | Event<'ready-to-close', {}>;
+  | Event<'ready-to-close', {}>
+  | Event<
+      'conference-start-error',
+      { error: StartConferenceError; roomId?: string }
+    >
+  | Event<
+      'conference-terminate-error',
+      { error: TerminateConferenceError; roomId?: string }
+    >;
 
-export interface VideoConferenceType {
+export interface RNVideoConferenceProps {
   start: (options: VideoConferenceOptions) => Promise<void>;
   end: () => void;
 }
 
-export abstract class VideoConference {
+export abstract class VideoConferenceProps {
+  /**
+   * The ongoing Video Conference's Identification
+   */
+  abstract roomId: string;
+
+  abstract prepareStart(
+    callback: () => Promise<VideoConferenceOptions>,
+    eventData: any
+  ): Promise<void>;
+
   abstract start(options: VideoConferenceOptions): Promise<void>;
 
   /**
@@ -113,4 +136,20 @@ export abstract class VideoConference {
    * @throws {TerminateConferenceError}
    */
   abstract end(): void;
+
+  /**
+   * Add a listener for new events.
+   *
+   * The callback function receives an event parameter of type {VideoConferenceEvent}
+   * and the instance of the VideoConference
+   *
+   * @returns {() => void} function to remove current listener
+   * @param {VideoConferenceEventListener} listener Listener call back method
+   */
+  abstract addEventListener(listener: VideoConferenceEventListener): () => void;
+
+  /**
+   * Global Video Conference reference
+   */
+  static instance: () => VideoConferenceProps;
 }
