@@ -14,12 +14,12 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import com.reactnativevideoconference.JitsiMeetActivityManager;
-import com.reactnativevideoconference.JitsiMeetPackage;
+import com.reactnativevideoconference.VideoConferenceActivityManager;
+import com.reactnativevideoconference.VideoConferencePackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  public JitsiMeetActivityManager activityManager;
+  public VideoConferenceActivityManager activityManager;
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -34,7 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for RNVideoConferenceExample:
           // packages.add(new MyReactNativePackage());
-          packages.add(new JitsiMeetPackage());
+          packages.add(new VideoConferencePackage());
           return packages;
         }
 
@@ -59,7 +59,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want Flipper enabled
-    // this.activityManager = new JitsiMeetActivityManager(this);
+    // this.activityManager = new VideoConferenceActivityManager(this);
   }
 
 

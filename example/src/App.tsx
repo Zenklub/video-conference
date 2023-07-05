@@ -1,8 +1,9 @@
-import VideoConference, {
-  VideoConferenceEvent,
+import {
+  VideoConferenceImplementation,
+  VideoConferenceProps,
   CapabilitiesBuilder,
   VideoConferenceOptions,
-  VideoConferenceEventType,
+  VideoConferenceEvent,
 } from '@zenklub/react-native-video-conference';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -31,10 +32,10 @@ const conferenceOptions: VideoConferenceOptions = {
 };
 
 function App() {
+  const videoConference = useRef(VideoConferenceImplementation.instance());
   const [options, setOptions] =
     useState<VideoConferenceOptions>(conferenceOptions);
   const [loading, setLoading] = useState(true);
-  const removeRef = useRef<{ remove?: () => void }>({});
 
   const onSaveOptionOnStorage = (values: VideoConferenceOptions) => {
     AsyncStorage.setItem('VideoConferenceOptions', JSON.stringify(values));
@@ -56,15 +57,27 @@ function App() {
     loaderAsyncOptions();
   }, []);
 
-  const eventListener = useCallback((event: VideoConferenceEventType) => {
-    console.log('EventType', event.type, '\ndata:', event.data);
-    if (!__DEV__ && event.type === 'conference-terminated') {
-      Alert.alert(event.type, `data: ${JSON.stringify(event.data)}`);
-    }
-    if (event.type === 'ready-to-close') {
-      removeRef.current.remove?.();
-    }
-  }, []);
+  const eventListener = useCallback(
+    (event: VideoConferenceEvent, _instance?: VideoConferenceProps) => {
+      console.log(
+        'EventType',
+        event.type,
+        '\ndata:',
+        event,
+        'RoomId',
+        _instance?.roomId
+      );
+      if (!__DEV__ && event.type === 'conference-terminated') {
+        Alert.alert(event.type, `data: ${JSON.stringify(event.data)}`);
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    const remove = videoConference.current.addEventListener(eventListener);
+    return () => remove();
+  }, [eventListener]);
 
   useEffect(() => {
     if (options) onSaveOptionOnStorage(options);
@@ -92,9 +105,7 @@ function App() {
 
   const startJitsiAsNativeController = async () => {
     try {
-      await VideoConference.start(options);
-      removeRef.current.remove =
-        VideoConferenceEvent.addEventListener(eventListener);
+      await videoConference.current.start(options);
     } catch (err) {
       console.error(err);
     }
