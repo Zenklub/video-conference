@@ -2,14 +2,16 @@ import VideoConference, {
   VideoConferenceEvent,
   CapabilitiesBuilder,
   VideoConferenceOptions,
+  VideoConferenceEventType,
 } from '@zenklub/react-native-video-conference';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import VideoConferenceExample from './VideoConferenceExample';
 import Loading from './components/Loading';
+import { Alert } from 'react-native';
 
 export interface JSONObject {
   [key: string]: string | JSONObject | unknown;
@@ -32,6 +34,7 @@ function App() {
   const [options, setOptions] =
     useState<VideoConferenceOptions>(conferenceOptions);
   const [loading, setLoading] = useState(true);
+  const removeRef = useRef<{ remove?: () => void }>({});
 
   const onSaveOptionOnStorage = (values: VideoConferenceOptions) => {
     AsyncStorage.setItem('VideoConferenceOptions', JSON.stringify(values));
@@ -51,13 +54,16 @@ function App() {
 
   useEffect(() => {
     loaderAsyncOptions();
+  }, []);
 
-    const remove = VideoConferenceEvent.addEventListener((event) => {
-      console.log('EventType', event.type, '\ndata:', event.data);
-    });
-    return () => {
-      remove();
-    };
+  const eventListener = useCallback((event: VideoConferenceEventType) => {
+    console.log('EventType', event.type, '\ndata:', event.data);
+    if (!__DEV__ && event.type === 'conference-terminated') {
+      Alert.alert(event.type, `data: ${JSON.stringify(event.data)}`);
+    }
+    if (event.type === 'ready-to-close') {
+      removeRef.current.remove?.();
+    }
   }, []);
 
   useEffect(() => {
@@ -86,7 +92,9 @@ function App() {
 
   const startJitsiAsNativeController = async () => {
     try {
-      if (options) await VideoConference.start(options);
+      await VideoConference.start(options);
+      removeRef.current.remove =
+        VideoConferenceEvent.addEventListener(eventListener);
     } catch (err) {
       console.error(err);
     }

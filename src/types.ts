@@ -102,7 +102,7 @@ export type VideoConferenceEventType =
 
 export interface VideoConferenceType {
   start: (options: VideoConferenceOptions) => Promise<void>;
-  end: () => Promise<void>;
+  end: () => void;
 }
 
 export abstract class VideoConference {
@@ -112,5 +112,5 @@ export abstract class VideoConference {
    * Ends the ongoing video conference
    * @throws {TerminateConferenceError}
    */
-  abstract end(): Promise<void>;
+  abstract end(): void;
 }
