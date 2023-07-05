@@ -67,41 +67,9 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
     LocalBroadcastManager.getInstance(getReactApplicationContext()).unregisterReceiver(broadcastReceiver);
   }
 
-  public void onDestroy() {
-    LocalBroadcastManager.getInstance(getReactApplicationContext()).unregisterReceiver(broadcastReceiver);
-  }
-
-
-  @Override
-  public void onPictureInPictureClosed() {
-    Log.d("listen", "onPictureInPictureClosed");
-    WritableMap payload = Arguments.createMap();
-    String jsEventName = this.getEventNameForJs(BroadcastEvent.Type.CONFERENCE_TERMINATED);
-    WritableMap params = Arguments.createMap();
-    params.putMap("data", payload);
-    params.putString("type", jsEventName);
-
-    this.reactContext
-      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit("onJitsiMeetConference", params);
-  }
-
-
-  @Override
-  public void onEnterPictureInPicture() {
-    WritableMap payload = Arguments.createMap();
-    String jsEventName = "enter-pip";
-    WritableMap params = Arguments.createMap();
-    params.putMap("data", payload);
-    params.putString("type", jsEventName);
-
-    this.reactContext
-      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit("onJitsiMeetConference", params);
-  }
 
   @ReactMethod
-  public void launchJitsiMeetView(ReadableMap options, Promise onConferenceTerminated) {
+  public void start(ReadableMap options, Promise onConferenceTerminated) {
     JitsiMeetConferenceOptions.Builder builder = new JitsiMeetConferenceOptions.Builder();
 
     if (options.hasKey("room")) {
@@ -165,13 +133,14 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
     }
 
     // Set the feature flags
-    if (options.hasKey("featureFlags")) {
-      ReadableMap featureFlags = options.getMap("featureFlags");
-      ReadableMapKeySetIterator iterator = featureFlags.keySetIterator();
+    if (options.hasKey("capabilities")) {
+      ReadableMap capabilities = options.getMap("capabilities");
+      ReadableMapKeySetIterator iterator = capabilities.keySetIterator();
       while (iterator.hasNextKey()) {
-        String flag = iterator.nextKey();
-        Boolean value = featureFlags.getBoolean(flag);
-        builder.setFeatureFlag(flag, value);
+        String capability = iterator.nextKey();
+        Boolean value = capabilities.getBoolean(capability);
+        String flagKey = this.getFeatureFlagField(capability);
+        builder.setFeatureFlag(flagKey, value);
       }
     }
 
@@ -179,21 +148,14 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
     registerForBroadcastMessages();
 
 
-
-
     JitsiMeetActivityExtended.setCallback(new JitsiMeetActivityCallback() {
       @Override
       public void onCreated(JitsiMeetActivityExtended activity) {
         registerPictureInPictureCloseListener(activity);
+        onConferenceTerminated.resolve(null);
       }
     });
   }
-
-  @ReactMethod
-  public void start(ReadableMap options, Promise onConferenceTerminated) {
-    launchJitsiMeetView(options, onConferenceTerminated);
-  }
-
 
   private void registerForBroadcastMessages() {
     IntentFilter intentFilter = new IntentFilter();
@@ -237,7 +199,7 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
         }
 
         List<String> stringKeys = Arrays.asList(
-          "url", "error", "participantId", "email", "name", "role", "senderId", "message", "timestamp"
+          "url", "room", "error", "participantId", "email", "name", "role", "senderId", "message", "timestamp"
         );
         for (String key : stringKeys) {
           if (data.containsKey(key)) {
@@ -254,6 +216,41 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
         .emit("onJitsiMeetConference", params);
     }
+  }
+
+  private void emitEvent(String jsEventName) {
+    JitsiMeetConferenceOptions conferenceOptions = this.jitsiMeetActivityExtended.getIntent().getParcelableExtra("JitsiMeetConferenceOptions");
+    WritableMap payload = Arguments.createMap();
+
+    WritableMap params = Arguments.createMap();
+     if(conferenceOptions !=null && conferenceOptions.getServerURL() != null) {
+      String serverUrl = conferenceOptions.getServerURL().toString();
+      if(!serverUrl.endsWith("/")) {
+        serverUrl += "/";
+      }
+      String room = conferenceOptions.getRoom().toString();
+      payload.putString("url", serverUrl + room);
+    }
+    params.putMap("data", payload);
+    params.putString("type", jsEventName);
+
+    this.reactContext
+      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+      .emit("onJitsiMeetConference", params);
+  }
+
+  @Override
+  public void onPictureInPictureClosed() {
+    Log.d("refer_listen", "onPictureInPictureClosed");
+    String jsEventName = this.getEventNameForJs(BroadcastEvent.Type.CONFERENCE_TERMINATED);
+    this.emitEvent(jsEventName);
+    this.end();
+  }
+
+
+  @Override
+  public void onEnterPictureInPicture() {
+    this.emitEvent("enter-pip");
   }
 
   private String getEventNameForJs(BroadcastEvent.Type type) {
@@ -286,5 +283,93 @@ public class JitsiMeetModule extends ReactContextBaseJavaModule implements  Pict
         return "ready-to-close";
     }
     return null;
+  }
+
+
+  private static String getFeatureFlagField(String value) {
+      switch (value) {
+          case "addPeople":
+              return "add-people.enabled";
+          case "audioFocus":
+              return "audio-focus.disabled";
+          case "audioMute":
+              return "audio-mute.enabled";
+          case "audioOnly":
+              return "audio-only.enabled";
+          case "calendar":
+              return "calendar.enabled";
+          case "callIntegration":
+              return "call-integration.enabled";
+          case "carMode":
+              return "car-mode.enabled";
+          case "closeCaptions":
+              return "close-captions.enabled";
+          case "conferenceTimer":
+              return "conference-timer.enabled";
+          case "chat":
+              return "chat.enabled";
+          case "filmStrip":
+              return "filmstrip.enabled";
+          case "fullScreen":
+              return "fullscreen.enabled";
+          case "help":
+              return "help.enabled";
+          case "invite":
+              return "invite.enabled";
+          case "recording":
+              return "ios.recording.enabled";
+          case "screenSharing":
+              return "ios.screensharing.enabled";
+          case "speakerStats":
+              return "speakerstats.enabled";
+          case "kickOut":
+              return "kick-out.enabled";
+          case "liveStreaming":
+              return "live-streaming.enabled";
+          case "lobbyMode":
+              return "lobby-mode.enabled";
+          case "meetingName":
+              return "meeting-name.enabled";
+          case "meetingPassword":
+              return "meeting-password.enabled";
+          case "notifications":
+              return "notifications.enabled";
+          case "overflowMenu":
+              return "overflow-menu.enabled";
+          case "pip":
+              return "pip.enabled";
+          case "pipWhileScreenSharing":
+              return "pip-while-screen-sharing.enabled";
+          case "preJoinPage":
+              return "prejoinpage.enabled";
+          case "preJoinPageHideName":
+              return "prejoinpage.hideDisplayName";
+          case "raiseHand":
+              return "raise-hand.enabled";
+          case "reactions":
+              return "reactions.enabled";
+          case "replaceParticipant":
+              return "replace.participant";
+          case "securityOptions":
+              return "security-options.enabled";
+          case "serverUrlChange":
+              return "server-url-change.enabled";
+          case "settings":
+              return "settings.enabled";
+          case "tileView":
+              return "tile-view.enabled";
+          case "toolboxAlwaysVisible":
+              return "toolbox.alwaysVisible";
+          case "toolbox":
+              return "toolbox.enabled";
+          case "videoMute":
+              return "video-mute.enabled";
+          case "videoShare":
+              return "video-share.enabled";
+          case "welcomePage":
+              return "welcomepage.enabled";
+          default:
+              return value;
+      }
   }
 }

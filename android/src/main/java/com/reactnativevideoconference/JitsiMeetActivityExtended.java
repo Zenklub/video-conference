@@ -13,17 +13,16 @@ import org.jitsi.meet.sdk.JitsiMeetView;
 public class JitsiMeetActivityExtended extends JitsiMeetActivity {
 
   private static JitsiMeetActivityCallback callback;
-  private Boolean isPictureInPicture = false;
+  private static Boolean isActivityOpen = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    if (callback != null) {
-      callback.onCreated(this);
-      // clean the callback to prevent multiples requests
-      callback = null;
-    }
+   if (callback != null) {
+     callback.onCreated(this);
+     // clean the callback to prevent multiples requests
+     callback = null;
+   }
   }
 
   @Override
@@ -45,25 +44,21 @@ public class JitsiMeetActivityExtended extends JitsiMeetActivity {
     super.onPictureInPictureModeChanged(isInPictureInPictureMode);
 
     if (isInPictureInPictureMode) {
-      isPictureInPicture = true;
       Log.d("refer_log", "enter-pip");
       if (pictureInPictureCloseListener != null) {
         pictureInPictureCloseListener.onEnterPictureInPicture();
       }
     } else {
-      isPictureInPicture = false;
+      if (!isActivityOpen && pictureInPictureCloseListener != null) {
+        pictureInPictureCloseListener.onPictureInPictureClosed();
+      }
     }
   }
 
   @Override
   public void onStop() {
     super.onStop();
-    if (isPictureInPicture == true && pictureInPictureCloseListener != null) {
-      Log.d("refer_log", "onStop");
-      Intent intent = getIntent();
-      pictureInPictureCloseListener.onPictureInPictureClosed();
-//      isPictureInPicture = false;
-    }
+    isActivityOpen = false;
   }
 
   public static void launchExtended(Context context, JitsiMeetConferenceOptions options) {
@@ -77,6 +72,7 @@ public class JitsiMeetActivityExtended extends JitsiMeetActivity {
     }
 
     context.startActivity(intent);
+    isActivityOpen = true;
 
   }
 
@@ -90,7 +86,6 @@ public class JitsiMeetActivityExtended extends JitsiMeetActivity {
       if (flags != null) {
         if (flags.getBoolean("pip.enabled")) {
           JitsiMeetView view = this.getJitsiView();
-          Log.d("refer_log", "enterPictureInPicture");
           if (view != null) {
             view.enterPictureInPicture();
           }
