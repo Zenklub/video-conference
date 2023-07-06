@@ -37,7 +37,6 @@ export class VideoConferenceImplementation extends VideoConferenceProps {
   }
 
   private onEventHandler = (event: VideoConferenceEvent) => {
-    console.log('onEventHandler', this.listeners.length);
     this.listeners.forEach((listener) => {
       listener(event, this);
     });
