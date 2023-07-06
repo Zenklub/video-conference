@@ -353,7 +353,7 @@ yarn example android
 If your having problems with `duplicate_classes` errors, try exclude them from the react-native-jitsimeet project implementation with the following code:
 
 ```groovy
-implementation(project(':reactnativevideoconference')) {
+implementation(project(':zenklub_react-native-video-conference')) {
   // Un-comment below if using hermes
   exclude group: 'com.facebook',module:'hermes'
   // Un-comment any packages below that you have added to your project to prevent `duplicate_classes` errors
