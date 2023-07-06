@@ -122,6 +122,119 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
+### VideoConferenceImplementation 
+
+The other options use VideoConferenceImplementation. Example
+
+```jsx
+import {
+  VideoConferenceImplementation,
+  VideoConferenceListener,
+  CapabilitiesBuilder,
+  VideoConferenceOptions,
+  VideoConferenceEvent,
+} from '@zenklub/react-native-video-conference';
+import React, { useCallback, useRef } from 'react';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
+
+const defaultContext = {} as VideoConferenceInterfaceProps;
+
+const VCContext = createContext(defaultContext);
+
+export const VideoConferenceProvider: React.FC = ({ children }) => {
+  const videoConference = useRef(VideoConferenceInterface.instance());
+  const [loading, setLoadingState] = useState(false);
+
+  const onEvent = useCallback(
+		(event: VideoConferenceEvent, instance?: VideoConferenceProps) => {
+			console.log('EventType', event.type, '\ndata:', event.data);
+		},
+		[]
+	);
+  useEffect(() => {
+		const remove =
+			VideoConferenceImplementation.instance().addEventListener(onEvent);
+		return () => {
+			remove();
+		};
+	}, [onEvent]);
+
+  return (
+		<VCContext.Provider value={videoConference.current}>
+			{children}
+		</VCContext.Provider>
+	);
+}
+
+
+
+export function useVideoConference() {
+	const context = useContext(VCContext);
+
+	if (context === null) {
+		throw Error(
+			'useVideoConference should be used only inside a VideoConferenceProvider'
+		);
+	}
+
+	return context;
+}
+
+
+const capabilities = new CapabilitiesBuilder().build();
+
+const conferenceOptions: VideoConferenceOptions = {
+  room: 'ReactNativeJitsiRoom',
+  serverUrl: 'https://meet.jit.si/',
+  userInfo: {
+    name: 'React Native Jitsi Meet Example',
+    email: 'example@test.com',
+    avatar: 'https://picsum.photos/200',
+  },
+  capabilities: capabilities,
+};
+
+export function App() {
+	const videoConference = useVideoConference();
+
+  const startJitsiAsNativeController = async () => {
+
+    videoConference.start(conferenceOptions);
+
+  };
+
+  const end = () => {
+    videoConference.end();
+  };
+
+	return (
+    <View style={styles.container}>
+      <Pressable
+        onPress={startJitsiAsNativeController}
+        style={({ pressed }) => [
+          styles.pressable,
+          { opacity: pressed ? 0.5 : 1 },
+        ]}
+      >
+        <Text style={styles.pressableText}>
+          Start Jitsi on top of RN Application
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
+```
+| Atributo/Método	| Descrição
+| ------------|----------------------------------
+`roomId` | A identificação da videoconferência em andamento.
+`sendEvent(event: VideoConferenceEvent)`	| Envia um evento da videoconferência para a sessão da conferência.
+`start(options: VideoConferenceOptions)	` |Inicia uma sessão de videoconferência com as opções especificadas.
+`end()`	| Encerra a videoconferência em andamento. Lança um erro `TerminateConferenceError` se ocorrer um erro durante o encerramento.
+`addEventListener(listener: VideoConferenceEventListener)` |Adiciona um ouvinte para novos eventos na videoconferência. A função de retorno de chamada do ouvinte recebe um parâmetro de evento do tipo `VideoConferenceEvent` e a instância da `VideoConference`. Retorna uma função que pode ser usada para remover o ouvinte atual.
+`instance: () => VideoConferenceProps`	| Representa uma referência global para a instância da videoconferência.
+
+
 See [Options](#options) for further information.
 
 ## iOS install
@@ -136,21 +249,27 @@ For more information check [Create Objective-C bridging header file](https://dev
 
 2.) Replace the following code in AppDelegate.m (ONLY required for mode 1. If you're using mode 2, skip this step):
 
+
+```objective-c
+...
+#import "RNVideoConference/RNVideoConferenceViewController.h"
+....
+```
+
 ```objective-c
 UIViewController *rootViewController = [UIViewController new];
 rootViewController.view = rootView;
 self.window.rootViewController = rootViewController;
 ```
-
 with this one
 
 ```objective-c
-UIViewController *rootViewController = [UIViewController new];
-UINavigationController *navigationController = [[UINavigationController alloc]initWithRootViewController:rootViewController];
-navigationController.navigationBarHidden = YES;
-rootViewController.view = rootView;
-self.window.rootViewController = navigationController;
+  RNVideoConferenceViewController *rootViewController = [RNVideoConferenceViewController new];
+  rootViewController.rnView = rootView;
+  self.window.rootViewController = rootViewController;
 ```
+
+or
 
 This will create a navigation controller to be able to navigate between the Jitsi component and your react native screens.
 
