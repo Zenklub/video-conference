@@ -76,7 +76,7 @@ interface Event<T extends string, D extends object> {
 }
 
 export type VideoConferenceEvent =
-  | Event<'conference-start', { url: string; roomId?: string }>
+  | Event<'conference-start', { url?: string; roomId?: string }>
   | Event<'conference-joined', { url: string }>
   | Event<'conference-terminated', { url: string; error?: string }>
   | Event<'conference-will-join', { url: string }>
@@ -106,11 +106,11 @@ export type VideoConferenceEvent =
   | Event<'ready-to-close', {}>
   | Event<
       'conference-start-error',
-      { error: StartConferenceError; roomId?: string }
+      { error?: StartConferenceError; roomId?: string }
     >
   | Event<
       'conference-terminate-error',
-      { error: TerminateConferenceError; roomId?: string }
+      { error?: TerminateConferenceError; roomId?: string }
     >;
 
 export interface RNVideoConferenceProps {
