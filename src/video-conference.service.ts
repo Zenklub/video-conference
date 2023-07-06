@@ -66,16 +66,8 @@ export class VideoConferenceImplementation extends VideoConferenceProps {
     return VideoConferenceImplementation._lazyInstance!;
   }
 
-  async prepareStart(
-    callbackOptions: () => Promise<VideoConferenceOptions>,
-    eventData?: any
-  ) {
-    this.onEventHandler({
-      type: 'conference-start',
-      data: eventData ?? {},
-    });
-    const options = await callbackOptions();
-    await this.start(options);
+  sendEvent(event: VideoConferenceEvent) {
+    this.onEventHandler(event);
   }
 
   async start(options: VideoConferenceOptions) {

@@ -124,10 +124,7 @@ export abstract class VideoConferenceProps {
    */
   abstract roomId: string;
 
-  abstract prepareStart(
-    callback: () => Promise<VideoConferenceOptions>,
-    eventData: any
-  ): Promise<void>;
+  abstract sendEvent(event: VideoConferenceEvent): void;
 
   abstract start(options: VideoConferenceOptions): Promise<void>;
 
