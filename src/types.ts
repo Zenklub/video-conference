@@ -1,4 +1,7 @@
-import { StartConferenceError, TerminateConferenceError } from './error.types';
+import {
+  StartConferenceError,
+  TerminateConferenceError,
+} from './utils/error.types';
 
 export interface VideoUserInfo {
   name?: string;
