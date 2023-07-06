@@ -1,4 +1,4 @@
-package com.reactnativejitsimeet;
+package com.reactnativevideoconference;
 
 import androidx.annotation.NonNull;
 
@@ -12,12 +12,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class JitsiMeetPackage implements ReactPackage {
+public class VideoConferencePackage implements ReactPackage {
   @NonNull
   @Override
   public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
-    modules.add(new JitsiMeetModule(reactContext));
+    modules.add(new VideoConferenceModule(reactContext));
     return modules;
   }
 

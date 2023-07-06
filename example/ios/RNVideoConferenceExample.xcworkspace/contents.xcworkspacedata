@@ -2,12 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/erick/Workspace/Zenklub/video-conference/example/ios/RNVideoConferenceExample.xcodeproj">
+      location = "group:RNVideoConferenceExample.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:RNVideoConferenceExample.xcodeproj">
    </FileRef>
 </Workspace>

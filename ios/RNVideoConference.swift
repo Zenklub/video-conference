@@ -1,5 +1,4 @@
 import UIKit
-import JitsiMeetSDK
 
 @objc(RNVideoConference)
 class RNVideoConference: RCTEventEmitter {
@@ -8,18 +7,20 @@ class RNVideoConference: RCTEventEmitter {
         super.init()
         EventEmitter.sharedInstance.registerEventEmitter(eventEmitter: self)
     }
+
+    override class func requiresMainQueueSetup() -> Bool {
+        return true
+    }
     
-    @objc func end(resolver resolve: @escaping RCTPromiseResolveBlock,
-                      rejecter reject: @escaping RCTPromiseRejectBlock) {
- 
+    @objc func end(_ resolve: @escaping RCTPromiseResolveBlock, endFailed reject: RCTPromiseRejectBlock) {
         guard let rootViewController = UIApplication.shared.delegate?.window??.rootViewController as? RNVideoConferenceViewController else {
-            reject("LAUNCH_VIDEO_CONFERENCE", "rootViewController should be RNVideoConferenceViewController", NSError())
+            reject("END_VIDEO_CONFERENCE", "rootViewController should be RNVideoConferenceViewController", NSError())
             return
         }
-        
-        rootViewController.end()
-        resolve(nil)
-
+        DispatchQueue.main.async {
+            rootViewController.end()
+            resolve(nil)
+        }    
     }
 
     @objc func start(_ options: NSDictionary,

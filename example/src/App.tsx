@@ -1,13 +1,26 @@
-import VideoConference, {
+import {
+  VideoConferenceImplementation,
+  VideoConferenceProps,
   CapabilitiesBuilder,
+  VideoConferenceOptions,
+  VideoConferenceEvent,
 } from '@zenklub/react-native-video-conference';
 
-import React from 'react';
-import { StyleSheet, View, Pressable, Text } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import VideoConferenceExample from './VideoConferenceExample';
+import Loading from './components/Loading';
+import { Alert } from 'react-native';
+
+export interface JSONObject {
+  [key: string]: string | JSONObject | unknown;
+}
 
 const capabilities = new CapabilitiesBuilder().build();
 
-const conferenceOptions = {
+const conferenceOptions: VideoConferenceOptions = {
   room: 'ReactNativeJitsiRoom',
   serverUrl: 'https://meet.jit.si/',
   userInfo: {
@@ -19,55 +32,97 @@ const conferenceOptions = {
 };
 
 function App() {
+  const videoConference = useRef(VideoConferenceImplementation.instance());
+  const [options, setOptions] =
+    useState<VideoConferenceOptions>(conferenceOptions);
+  const [loading, setLoading] = useState(true);
+
+  const onSaveOptionOnStorage = (values: VideoConferenceOptions) => {
+    AsyncStorage.setItem('VideoConferenceOptions', JSON.stringify(values));
+  };
+
+  const loaderAsyncOptions = async () => {
+    try {
+      const content = await AsyncStorage.getItem('VideoConferenceOptions');
+      if (!content) throw new Error('Storage not found');
+      setOptions(JSON.parse(content));
+    } catch {
+      setOptions(conferenceOptions);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loaderAsyncOptions();
+  }, []);
+
+  const eventListener = useCallback(
+    (event: VideoConferenceEvent, _instance?: VideoConferenceProps) => {
+      console.log(
+        'EventType',
+        event.type,
+        '\ndata:',
+        event,
+        'RoomId',
+        _instance?.roomId
+      );
+      if (!__DEV__ && event.type === 'conference-terminated') {
+        Alert.alert(event.type, `data: ${JSON.stringify(event.data)}`);
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    const remove = videoConference.current.addEventListener(eventListener);
+    return () => remove();
+  }, [eventListener]);
+
+  useEffect(() => {
+    if (options) onSaveOptionOnStorage(options);
+  }, [options]);
+
+  const onChangeOption = (text: string, name: string) => {
+    setOptions((values) => ({ ...values, [name]: text }));
+  };
+  const resetOptions = () => {
+    setOptions(conferenceOptions);
+  };
+
+  const onChangeUserInfo = (text: string, name: string) => {
+    setOptions((values) => ({
+      ...values,
+      userInfo: { ...values.userInfo, [name]: text },
+    }));
+  };
+  const onChangeCapabilities = (text: string, value: boolean) => {
+    setOptions((values) => ({
+      ...values,
+      capabilities: { ...values.capabilities, [text]: value },
+    }));
+  };
+
   const startJitsiAsNativeController = async () => {
     try {
-      await VideoConference.start(conferenceOptions);
+      await videoConference.current.start(options);
     } catch (err) {
       console.error(err);
     }
   };
 
+  if (!options || loading) return <Loading />;
+
   return (
-    <View style={styles.container}>
-      <Pressable
-        onPress={startJitsiAsNativeController}
-        style={({ pressed }) => [
-          styles.pressable,
-          { opacity: pressed ? 0.5 : 1 },
-        ]}
-      >
-        <Text style={styles.pressableText}>
-          Start Jitsi on top of RN Application
-        </Text>
-      </Pressable>
-    </View>
+    <VideoConferenceExample
+      options={options}
+      onChangeOption={onChangeOption}
+      onChangeUserInfo={onChangeUserInfo}
+      onChangeCapabilities={onChangeCapabilities}
+      resetOptions={resetOptions}
+      onStart={startJitsiAsNativeController}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pressable: {
-    width: '80%',
-    borderRadius: 15,
-    height: 50,
-    marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
-  },
-  pressableText: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#fff',
-  },
-  jitsiMeetView: {
-    flex: 1,
-  },
-});
 
 export default App;

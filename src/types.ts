@@ -1,10 +1,15 @@
-export interface JitsiMeetUserInfo {
+import { StartConferenceError, TerminateConferenceError } from './error.types';
+
+export interface VideoUserInfo {
   name?: string;
   email?: string;
   avatar?: string;
 }
 
-export type EventListener = (event: JitsiMeetEventType) => void;
+export type VideoConferenceEventListener = (
+  event: VideoConferenceEvent,
+  instance?: VideoConferenceProps
+) => void;
 
 export interface VideoConferenceCapabilities {
   addPeople: boolean;
@@ -51,10 +56,10 @@ export interface VideoConferenceCapabilities {
   toolbox: boolean;
 }
 
-export interface JitsiMeetConferenceOptions {
+export interface VideoConferenceOptions {
   room: string;
   serverUrl?: string;
-  userInfo?: JitsiMeetUserInfo;
+  userInfo?: VideoUserInfo;
   serverCredentials?: string;
   startingSettings?: {
     subject?: string;
@@ -70,12 +75,12 @@ interface Event<T extends string, D extends object> {
   data: D;
 }
 
-export type JitsiMeetEventType =
-  | Event<'conference-start', { url: string }>
+export type VideoConferenceEvent =
+  | Event<'conference-start', { url?: string; roomId?: string }>
   | Event<'conference-joined', { url: string }>
   | Event<'conference-terminated', { url: string; error?: string }>
   | Event<'conference-will-join', { url: string }>
-  | Event<'enter-pip', {}>
+  | Event<'enter-pip', { url?: string }>
   | Event<
       'participant-joined',
       { participantId: string; email: string; name: string; role: string }
@@ -98,9 +103,50 @@ export type JitsiMeetEventType =
   | Event<'chat-toggled', { isOpen: boolean }>
   | Event<'audio-muted-change', { muted: boolean }>
   | Event<'video-muted-change', { muted: boolean }>
-  | Event<'ready-to-close', {}>;
+  | Event<'ready-to-close', {}>
+  | Event<
+      'conference-start-error',
+      { error?: StartConferenceError; roomId?: string }
+    >
+  | Event<
+      'conference-terminate-error',
+      { error?: TerminateConferenceError; roomId?: string }
+    >;
 
-export interface JitsiMeetType {
-  start: (options: JitsiMeetConferenceOptions) => Promise<void>;
+export interface RNVideoConferenceProps {
+  start: (options: VideoConferenceOptions) => Promise<void>;
   end: () => void;
+}
+
+export abstract class VideoConferenceProps {
+  /**
+   * The ongoing Video Conference's Identification
+   */
+  abstract roomId: string;
+
+  abstract sendEvent(event: VideoConferenceEvent): void;
+
+  abstract start(options: VideoConferenceOptions): Promise<void>;
+
+  /**
+   * Ends the ongoing video conference
+   * @throws {TerminateConferenceError}
+   */
+  abstract end(): void;
+
+  /**
+   * Add a listener for new events.
+   *
+   * The callback function receives an event parameter of type {VideoConferenceEvent}
+   * and the instance of the VideoConference
+   *
+   * @returns {() => void} function to remove current listener
+   * @param {VideoConferenceEventListener} listener Listener call back method
+   */
+  abstract addEventListener(listener: VideoConferenceEventListener): () => void;
+
+  /**
+   * Global Video Conference reference
+   */
+  static instance: () => VideoConferenceProps;
 }

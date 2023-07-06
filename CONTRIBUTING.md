@@ -53,7 +53,7 @@ yarn test
 
 To edit the Objective-C files, open `example/ios/RNVideoConferenceExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-video-conference`.
 
-To edit the Kotlin files, open `example/android` in Android studio and find the source files at `reactnativejitsimeet` under `Android`.
+To edit the Kotlin files, open `example/android` in Android studio and find the source files at `reactnativevideoconference` under `Android`.
 
 ### Commit message convention
 
