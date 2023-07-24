@@ -38,8 +38,7 @@ export interface VideoConferenceCapabilities {
   settings: boolean;
   tileView: boolean;
   videoShare: boolean;
-  recordingIos: boolean;
-  recordingAndroid: boolean;
+  recording: boolean;
   liveStreaming: boolean;
   pip: boolean;
   toolboxAlwaysVisible: boolean;
@@ -48,8 +47,7 @@ export interface VideoConferenceCapabilities {
   audioFocus: boolean;
   audioOnly: boolean;
   help: boolean;
-  screenSharingIos: boolean;
-  screenSharingAndroid: boolean;
+  screenSharing: boolean;
   lobbyMode: boolean;
   pipWhileScreenSharing: boolean;
   preJoinPageHideName: boolean;
