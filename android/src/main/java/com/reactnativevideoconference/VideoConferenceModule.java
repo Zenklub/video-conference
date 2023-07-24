@@ -317,9 +317,9 @@ public class VideoConferenceModule extends ReactContextBaseJavaModule implements
           case "invite":
               return "invite.enabled";
           case "recording":
-              return "ios.recording.enabled";
+              return "recording.enabled";
           case "screenSharing":
-              return "ios.screensharing.enabled";
+              return "android.screensharing.enabled";
           case "speakerStats":
               return "speakerstats.enabled";
           case "kickOut":
