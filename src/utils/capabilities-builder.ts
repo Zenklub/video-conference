@@ -28,8 +28,7 @@ export class CapabilitiesBuilder {
     closeCaptions: false,
     calendar: false,
     callIntegration: false,
-    recordingIos: false,
-    recordingAndroid: false,
+    recording: false,
     liveStreaming: false,
     invite: false,
     addPeople: false,
@@ -39,8 +38,7 @@ export class CapabilitiesBuilder {
     audioFocus: false,
     audioOnly: false,
     help: false,
-    screenSharingIos: false,
-    screenSharingAndroid: false,
+    screenSharing: false,
     lobbyMode: false,
     pipWhileScreenSharing: false,
     preJoinPageHideName: false,
@@ -162,13 +160,8 @@ export class CapabilitiesBuilder {
     return this;
   }
 
-  recordingIos(value: boolean = true) {
-    this.capabilities.recordingIos = value;
-    return this;
-  }
-
-  recordingAndroid(value: boolean = true) {
-    this.capabilities.recordingAndroid = value;
+  recording(value: boolean = true) {
+    this.capabilities.recording = value;
     return this;
   }
 
@@ -212,13 +205,8 @@ export class CapabilitiesBuilder {
     return this;
   }
 
-  screenSharingIos(value: boolean = true) {
-    this.capabilities.screenSharingIos = value;
-    return this;
-  }
-
-  screenSharingAndroid(value: boolean = true) {
-    this.capabilities.screenSharingAndroid = value;
+  screenSharing(value: boolean = true) {
+    this.capabilities.screenSharing = value;
     return this;
   }
 
