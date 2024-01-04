@@ -17,12 +17,12 @@ export class CapabilitiesBuilder {
     serverUrlChange: true,
     videoShare: true,
     toolbox: true,
-    settings: true,
     reactions: true,
     securityOptions: true,
     pip: true,
     chat: true,
     // default disabled
+    settings: false,
     tileView: false,
     kickOut: false,
     closeCaptions: false,
