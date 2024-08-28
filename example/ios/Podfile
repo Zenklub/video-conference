@@ -1,7 +1,9 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '12.0'
+platform :ios, '12.4'
+
+production = ENV["PRODUCTION"] == "1"
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -20,6 +22,7 @@ target 'RNVideoConferenceExample' do
     # Hermes is now enabled by default. Disable by setting this flag to false.
     # Upcoming versions of React Native may rely on get_default_flags(), but
     # we make it explicit here to aid in the React Native upgrade process.
+    :production => production,
     :hermes_enabled => false,
     :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
