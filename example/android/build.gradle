@@ -6,6 +6,11 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 33
         targetSdkVersion = 33
+        
+        videoConferenceExcludeModules = [
+            [exclude group: 'com.facebook.react', module:'react-native-async-storage'],
+            [exclude group: 'com.facebook', module:'hermes']
+        ]
     }
     repositories {
         google()

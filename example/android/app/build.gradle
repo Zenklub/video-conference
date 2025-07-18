@@ -206,13 +206,6 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
-    // Jitsi SDK
-    implementation(project(':reactnativevideoconference')) {
-        exclude group: 'com.facebook.react', module:'react-native-async-storage'
-        exclude group: 'com.facebook', module:'hermes'
-        transitive = true
-    }
 }
 
 // Run this once to be able to run the application with BUCK

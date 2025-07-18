@@ -21,7 +21,7 @@ android {
     compileSdkVersion safeExtGet('JitsiMeet_compileSdkVersion', 33)
     buildToolsVersion safeExtGet('JitsiMeet_buildToolsVersion', '33.0.0')
     defaultConfig {
-        minSdkVersion safeExtGet('JitsiMeet_minSdkVersion', 24)
+        minSdkVersion safeExtGet('JitsiMeet_minSdkVersion', 26)
         targetSdkVersion safeExtGet('JitsiMeet_targetSdkVersion', 33)
         versionCode 1
         versionName "1.0"
@@ -52,10 +52,15 @@ repositories {
     jcenter()
 }
 
+def videoConferenceExcludeModules = rootProject.hasProperty("videoConferenceExcludeModules") ? rootProject.videoConferenceExcludeModules : []
+
 dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation ('org.jitsi.react:jitsi-meet-sdk:11.3.0') {
+        videoConferenceExcludeModules.each { item ->
+            exclude group: item.group, module: item.module
+        }
         transitive = true
     }
 }

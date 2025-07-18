@@ -3,6 +3,7 @@
 React Native Wrapper for Jitsi Meet SDK.
 
 ## Deprecated
+
 This package is deprecated and will no longer receive any updates. I recommend checking out https://github.com/Zenklub/video-conferece
 
 ## Install
@@ -46,7 +47,6 @@ const conferenceOptions: VideoConferenceOptions = {
 };
 
 function App() {
-  
   const eventListener = useCallback((event: VideoConferenceEvent) => {
     console.log('EventType', event.type, '\ndata:', event.data);
   }, []);
@@ -54,7 +54,7 @@ function App() {
   useEffect(() => {
     const remove = VideoConferenceListener.addEventListener(eventListener);
 
-    return () => remove()
+    return () => remove();
   }, [eventListener]);
 
   const startJitsiAsNativeController = async () => {
@@ -78,7 +78,6 @@ function App() {
     VideoConference.end();
   };
 
-  
   return (
     <View style={styles.container}>
       <Pressable
@@ -122,7 +121,7 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-### VideoConferenceImplementation 
+### VideoConferenceImplementation
 
 The other options use VideoConferenceImplementation. Example
 
@@ -225,15 +224,15 @@ export function App() {
 }
 
 ```
-| Atributo/Método	| Descrição
-| ------------|----------------------------------
-`roomId` | A identificação da videoconferência em andamento.
-`sendEvent(event: VideoConferenceEvent)`	| Envia um evento da videoconferência para a sessão da conferência.
-`start(options: VideoConferenceOptions)	` |Inicia uma sessão de videoconferência com as opções especificadas.
-`end()`	| Encerra a videoconferência em andamento. Lança um erro `TerminateConferenceError` se ocorrer um erro durante o encerramento.
-`addEventListener(listener: VideoConferenceEventListener)` |Adiciona um ouvinte para novos eventos na videoconferência. A função de retorno de chamada do ouvinte recebe um parâmetro de evento do tipo `VideoConferenceEvent` e a instância da `VideoConference`. Retorna uma função que pode ser usada para remover o ouvinte atual.
-`instance: () => VideoConferenceProps`	| Representa uma referência global para a instância da videoconferência.
 
+| Atributo/Método                                            | Descrição                                                                                                                                                                                                                                                                  |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `roomId`                                                   | A identificação da videoconferência em andamento.                                                                                                                                                                                                                          |
+| `sendEvent(event: VideoConferenceEvent)`                   | Envia um evento da videoconferência para a sessão da conferência.                                                                                                                                                                                                          |
+| `start(options: VideoConferenceOptions) `                  | Inicia uma sessão de videoconferência com as opções especificadas.                                                                                                                                                                                                         |
+| `end()`                                                    | Encerra a videoconferência em andamento. Lança um erro `TerminateConferenceError` se ocorrer um erro durante o encerramento.                                                                                                                                               |
+| `addEventListener(listener: VideoConferenceEventListener)` | Adiciona um ouvinte para novos eventos na videoconferência. A função de retorno de chamada do ouvinte recebe um parâmetro de evento do tipo `VideoConferenceEvent` e a instância da `VideoConference`. Retorna uma função que pode ser usada para remover o ouvinte atual. |
+| `instance: () => VideoConferenceProps`                     | Representa uma referência global para a instância da videoconferência.                                                                                                                                                                                                     |
 
 See [Options](#options) for further information.
 
@@ -249,7 +248,6 @@ For more information check [Create Objective-C bridging header file](https://dev
 
 2.) Replace the following code in AppDelegate.m (ONLY required for mode 1. If you're using mode 2, skip this step):
 
-
 ```objective-c
 ...
 #import "RNVideoConference/RNVideoConferenceViewController.h"
@@ -261,6 +259,7 @@ UIViewController *rootViewController = [UIViewController new];
 rootViewController.view = rootView;
 self.window.rootViewController = rootViewController;
 ```
+
 with this one
 
 ```objective-c
@@ -405,17 +404,17 @@ buildscript {
 
 ## Options
 
-| key          | Data type | Default             | Description                                                                                                     |
-| ------------ | --------- | ------------------- | --------------------------------------------------------------------------------------------------------------- |
-| room         | string    | required            | Room name for Jitsi Meet                                                                                        |
-| serverUrl    | string    | https://meet.jit.si | Valid server URL                                                                                                |
-| token        | string    | ""                  | JWT token                                                                                                       |
-| subject      | string    | ""                  | Conference subject (will change the global subject for all participants)                                        |
-| audioOnly    | boolean   | false               | Controls whether the participant will join the conference in audio-only mode (no video is sent or recieved)     |
-| audioMuted   | boolean   | false               | Controls whether the participant will join the conference with the microphone muted                             |
-| videoMuted   | boolean   | false               | Controls whether the participant will join the conference with the camera muted                                 |
-| userInfo     | object    | {}                  | Object that contains information about the participant starting the meeting. See [UserInfo](#userinfo)          |
-| capabilities | object    | {}                  | Object that contains information about which feature flags should be set. See below for more info.              |
+| key          | Data type | Default             | Description                                                                                                 |
+| ------------ | --------- | ------------------- | ----------------------------------------------------------------------------------------------------------- |
+| room         | string    | required            | Room name for Jitsi Meet                                                                                    |
+| serverUrl    | string    | https://meet.jit.si | Valid server URL                                                                                            |
+| token        | string    | ""                  | JWT token                                                                                                   |
+| subject      | string    | ""                  | Conference subject (will change the global subject for all participants)                                    |
+| audioOnly    | boolean   | false               | Controls whether the participant will join the conference in audio-only mode (no video is sent or recieved) |
+| audioMuted   | boolean   | false               | Controls whether the participant will join the conference with the microphone muted                         |
+| videoMuted   | boolean   | false               | Controls whether the participant will join the conference with the camera muted                             |
+| userInfo     | object    | {}                  | Object that contains information about the participant starting the meeting. See [UserInfo](#userinfo)      |
+| capabilities | object    | {}                  | Object that contains information about which feature flags should be set. See below for more info.          |
 
 ### Feature Flags
 
@@ -471,20 +470,18 @@ yarn example android
 
 If your having problems with `duplicate_classes` errors, try exclude them from the react-native-jitsimeet project implementation with the following code:
 
+> app/build.gradle
+
 ```groovy
-implementation(project(':zenklub_react-native-video-conference')) {
-  // Un-comment below if using hermes
-  exclude group: 'com.facebook',module:'hermes'
-  // Un-comment any packages below that you have added to your project to prevent `duplicate_classes` errors
-  exclude group: 'com.facebook.react',module:'react-native-locale-detector'
-  exclude group: 'com.facebook.react',module:'react-native-vector-icons'
-  // exclude group: 'com.facebook.react',module:'react-native-community-async-storage'
-  // exclude group: 'com.facebook.react',module:'react-native-community_netinfo'
-  // exclude group: 'com.facebook.react',module:'react-native-svg'
-  // exclude group: 'com.facebook.react',module:'react-native-fetch-blob'
-  // exclude group: 'com.facebook.react',module:'react-native-webview'
-  // exclude group: 'com.facebook.react',module:'react-native-linear-gradient'
-  // exclude group: 'com.facebook.react',module:'react-native-sound'
-  transitive = true
+project {
+  ext {
+    ....
+    videoConferenceExcludeModules = [
+        [group: 'com.facebook.react', module:'react-native-svg'],
+        [group: 'com.facebook.react', module:'react-native-reanimated'],
+        [group: 'com.facebook.react', module:'react-native-webview'],
+    ]
+  }
 }
+
 ```
