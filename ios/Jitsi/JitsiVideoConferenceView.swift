@@ -12,7 +12,8 @@ class JitsiVideoConferenceView: UIView {
     fileprivate var conferenceOptions: JitsiMeetConferenceOptions?
     fileprivate var jitsiMeetView: JitsiMeetView?
     fileprivate var pipViewCoordinator: PiPViewCoordinator?
-    
+    private var isConferenceActive = false
+
     var delegate: RNVideoConferenceViewControllerDelegate?
 }
 
@@ -30,6 +31,13 @@ extension JitsiVideoConferenceView: VideoConferenceView {
     }
     
     func start(with options: VideoConferenceOptions, userData: UserData, capabilities: VideoConferenceCapabilities) throws {
+
+         guard !isConferenceActive else {
+            print("JitsiVideoConference: Ignoring start() call, conference is already active.")
+            throw RNVideoConferenceError.conferenceAlreadyActive
+            return
+        }
+
         let rootView = delegate?.view
         
         conferenceOptions = JitsiUtil
@@ -56,6 +64,8 @@ extension JitsiVideoConferenceView: VideoConferenceView {
         // animate in
         jitsiMeetView.alpha = 0
         pipViewCoordinator?.show()
+
+        isConferenceActive = true
     }
     
     func viewWillTransition(to size: CGSize,
@@ -92,6 +102,7 @@ extension JitsiVideoConferenceView: JitsiMeetViewDelegate {
     }
 
     func conferenceTerminated(_ data: [AnyHashable : Any]) {
+        self.cleanUp()
         self.delegate?.conferenceTerminated(data)
     }
 
