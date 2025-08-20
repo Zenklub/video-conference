@@ -1,6 +1,6 @@
 {
   "name": "@zenklub/react-native-video-conference",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "React native Wrapper for Jitsi Meet SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

@@ -23,6 +23,7 @@ extension JitsiVideoConferenceView: VideoConferenceView {
         jitsiMeetView?.removeFromSuperview()
         jitsiMeetView = nil
         pipViewCoordinator = nil
+        isConferenceActive = false
     }
     
     func end() {
@@ -32,10 +33,9 @@ extension JitsiVideoConferenceView: VideoConferenceView {
     
     func start(with options: VideoConferenceOptions, userData: UserData, capabilities: VideoConferenceCapabilities) throws {
 
-         guard !isConferenceActive else {
+        guard !isConferenceActive else {
             print("JitsiVideoConference: Ignoring start() call, conference is already active.")
             throw RNVideoConferenceError.conferenceAlreadyActive
-            return
         }
 
         let rootView = delegate?.view
