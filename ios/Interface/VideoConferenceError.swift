@@ -1,5 +1,5 @@
 enum RNVideoConferenceError: Error {
-    case missingRoom, rootViewNotFound, missingUserInfo
+    case conferenceAlreadyActive, missingRoom, rootViewNotFound, missingUserInfo
     
     
     
