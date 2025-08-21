@@ -1,10 +1,12 @@
 enum RNVideoConferenceError: Error {
-    case missingRoom, rootViewNotFound, missingUserInfo
+    case conferenceAlreadyActive, missingRoom, rootViewNotFound, missingUserInfo
     
     
     
     func getCode() -> String {
         switch self {
+        case .conferenceAlreadyActive:
+            return "CONFERENCE_ALREADY_ACTIVE"
         case .missingRoom:
             return "MISSING_ROOM"
         case .missingUserInfo:
@@ -16,6 +18,8 @@ enum RNVideoConferenceError: Error {
     
     func getMessage() -> String {
         switch self {
+        case .conferenceAlreadyActive:
+            return "You already have an active call."
         case .missingRoom:
             return "You must provide a room"
         case .missingUserInfo:
