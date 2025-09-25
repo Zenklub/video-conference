@@ -20,7 +20,7 @@ struct JitsiUtil {
             if let email = userData.email {
                 conferenceUserInfo.email = email
             }
-            if let avatar = userData.avatar {
+            if let avatar = userData.avatarUrl {
                 conferenceUserInfo.avatar = URL(string: avatar)
             }
             
