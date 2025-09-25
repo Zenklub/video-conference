@@ -106,7 +106,7 @@ struct VideoConferenceOptions {
 
 struct UserData {
     var name: String?
-    var avatarUrl: String?
+    var avatar: String?
     var email: String?
     
     class Builder {
@@ -123,8 +123,8 @@ struct UserData {
         }
         
         @discardableResult
-        func setAvatarUrl(_ avatarUrl: String) -> UserData.Builder {
-            userData.avatarUrl = avatarUrl
+        func setAvatar(_ avatar: String) -> UserData.Builder {
+            userData.avatar = avatar
             return self
         }
         
@@ -142,8 +142,8 @@ struct UserData {
             builder.setName(name)
         }
         
-        if let avatarUrl = options["avatar"] as? String {
-            builder.setAvatarUrl(avatarUrl)
+        if let avatar = options["avatar"] as? String {
+            builder.setAvatar(avatar)
         }
         
         if let email = options["email"] as? String {
