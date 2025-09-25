@@ -142,7 +142,7 @@ struct UserData {
             builder.setName(name)
         }
         
-        if let avatarUrl = options["avatarUrl"] as? String {
+        if let avatarUrl = options["avatar"] as? String {
             builder.setAvatarUrl(avatarUrl)
         }
         
