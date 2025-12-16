@@ -59,6 +59,7 @@ export interface VideoConferenceCapabilities {
 
 export interface VideoConferenceOptions {
   room: string;
+  sessionId?: string;
   serverUrl?: string;
   userInfo?: VideoUserInfo;
   serverCredentials?: string;
